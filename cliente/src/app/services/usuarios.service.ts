@@ -9,7 +9,7 @@ export class UsuariosService {
   // Ruta general de la API
   API_URI = 'https://gorest.co.in/public-api';
   // Token generado en gorest.co
-  auth_token = '92191436ee198f3d569d0d9a33a37d4cbc5187723afc3b839d0dd8275a900a45';
+  auth_token = '';
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${this.auth_token}`
