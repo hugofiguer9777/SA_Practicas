@@ -1,10 +1,12 @@
 #from flask import Flask, request, jsonify, Response
 import base64
+import hashlib
+import hmac
 
 def main():
 
     secret = "MiSecretDePruebaParaLaPractica#2"
-    secret_encoder = codificar(secret)
+    secret_encoder = ""
     payload = ""
     header = """{"alg":"HS256","typ":"JWT"}"""
     header_encoder = codificar(header)
@@ -21,12 +23,24 @@ def main():
         if entrada == 1:
             nombre = input("Nombre: ")
             carnet = input("Carnet: ")
-            payload = """{}"name":"{}","carnet":"{}"{}""".format("{", nombre, carnet, "}")
-            payload_encoder = codificar(payload)
-            jwt_text = "{}.{}.{}".format(header_encoder, payload_encoder, secret_encoder)
+            payload = """{}"name":"{}","carnet":"{}"{}""".format("{", nombre, carnet, "}") # concatena el payload
+            payload_encoder = codificar(payload) # codifica a b64 el payload
+
+            # codificamos con sh256 el secret
+            digest = hmac.new(secret.encode('UTF-8'), "{}.{}".format(header_encoder, payload_encoder).encode('UTF-8'), hashlib.sha256)
+            secret_encoder = digest.hexdigest()
+            byte_array = bytearray.fromhex(secret_encoder)
+            base64_val = base64.b64encode(byte_array).decode("UTF-8")
+            # concatenamos todo el token jwt
+            jwt_text = "{}.{}.{}".format(header_encoder, payload_encoder, base64_val)
             print("Codigo JWT: " + jwt_text)
 
         elif entrada == 2:
+            jwt_key = input("JWT: ")
+            split = jwt_key.split('.')
+            header_decoder = decodificar(split[0])
+            payload_dencoder = decodificar(split[1])
+
             print("\n")
 
         elif entrada == 3:
@@ -44,7 +58,7 @@ def codificar(text):
 
 def decodificar(text):
     # Encoding the Base64 encoded string into bytes
-    b1 = s1.encode("UTF-8")
+    b1 = text.encode("UTF-8")
     # Decoding the Base64 bytes
     d = base64.b64decode(b1)
     # Decoding the bytes to string
