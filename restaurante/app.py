@@ -17,6 +17,7 @@ def root():
 
 @app.route('/api/recibir_pedido', methods=['POST'])
 def recibir_pedido():
+    # Recibiendo parametros del body
     id_pedido = request.json['id_pedido']
     producto = request.json['producto']
     cantidad = request.json['cantidad']
@@ -24,17 +25,36 @@ def recibir_pedido():
     pedidos[id_pedido] = pedido_nuevo
     print("Guardando pedido: ", pedido_nuevo)
 
+    # Enviando respuesta de la api
     response = jsonify({ 'mensaje': 'Pedido recibido.'})
     return response
 
 @app.route('/api/estado_pedido', methods=['POST'])
 def estado_pedido():
+    # Recibiendo parametros del body
     id_pedido = request.json['id_pedido']
 
     pedido = pedidos[id_pedido]
     print("El estado del pedido ", id_pedido, " es: ", pedido['estado'])
 
+    # Enviando respuesta de la api
     response = jsonify({ 'id_pedido': id_pedido, "producto": pedido['producto'], "estado": pedido['estado'] })
+    return response
+
+@app.route('/api/avisar_repartidor', methods=['POST'])
+def estado_pedido():
+    # Recibiendo parametros del body
+    id_repartidor = request.json['id_repartidor']
+    id_pedido = request.json['id_pedido']
+
+    pedido = pedidos[id_pedido]
+    pedido['estado'] = "Listo"
+    pedidos[id_pedido] = pedido
+
+    print("Notificando al repartidor del pedido...")
+
+    # Enviando respuesta de la api
+    response = jsonify({ 'mensaje': "Notificando al repartidor..." })
     return response
 
 @app.errorhandler(404)
