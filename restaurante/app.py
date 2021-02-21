@@ -7,5 +7,44 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+pedidos = {}
+
+@app.route('/', methods=['GET'])
+def root():
+    response = jsonify({ 'mensaje': 'API en Python con Flask'})
+    return response
+
+
+@app.route('/api/recibir_pedido', methods=['POST'])
+def recibir_pedido():
+    id_pedido = request.json['id_pedido']
+    producto = request.json['producto']
+    cantidad = request.json['cantidad']
+    pedido_nuevo = { "producto": producto, "cantidad": cantidad, "estado": "Preparando"}
+    pedidos[id_pedido] = pedido_nuevo
+    print("Guardando pedido: ", pedido_nuevo)
+
+    response = jsonify({ 'mensaje': 'Pedido recibido.'})
+    return response
+
+@app.route('/api/estado_pedido', methods=['POST'])
+def estado_pedido():
+    id_pedido = request.json['id_pedido']
+
+    pedido = pedidos[id_pedido]
+    print("El estado del pedido ", id_pedido, " es: ", pedido['estado'])
+
+    response = jsonify({ 'id_pedido': id_pedido, "producto": pedido['producto'], "estado": pedido['estado'] })
+    return response
+
+@app.errorhandler(404)
+def error(error=None):
+    response = jsonify({
+        'mensaje': 'Recurso no encontrado: ' + request.url,
+        'status': 404
+    })
+    response.status_code = 404
+    return response
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
