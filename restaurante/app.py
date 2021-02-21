@@ -26,7 +26,7 @@ def recibir_pedido():
     print("Guardando pedido: ", pedido_nuevo)
 
     # Enviando respuesta de la api
-    response = jsonify({ 'mensaje': 'Pedido recibido.'})
+    response = jsonify({ 'id_pedido': id_pedido, 'producto': producto, 'cantidad': cantidad, 'mensaje': 'Pedido recibido.'})
     return response
 
 @app.route('/api/estado_pedido', methods=['POST'])
@@ -42,7 +42,7 @@ def estado_pedido():
     return response
 
 @app.route('/api/avisar_repartidor', methods=['POST'])
-def estado_pedido():
+def avisar_repartidor():
     # Recibiendo parametros del body
     id_repartidor = request.json['id_repartidor']
     id_pedido = request.json['id_pedido']

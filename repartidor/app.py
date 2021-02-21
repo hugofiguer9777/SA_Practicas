@@ -26,7 +26,7 @@ def recibir_pedido():
     print("Pedido en camino: ", pedido_nuevo)
 
     # Enviando respuesta de la api
-    response = jsonify({ 'mensaje': 'Pedido recibido y en camino.'})
+    response = jsonify({ 'id_pedido': id_pedido, 'producto': producto, 'cantidad': cantidad, 'mensaje': 'Pedido recibido y en camino.'})
     return response
 
 @app.route('/api/estado_pedido', methods=['POST'])
@@ -42,7 +42,7 @@ def estado_pedido():
     return response
 
 @app.route('/api/marcar_entregado', methods=['PUT'])
-def estado_pedido():
+def marcar_entregado():
     # Recibiendo parametros del body
     id_pedido = request.json['id_pedido']
 
@@ -65,4 +65,4 @@ def error(error=None):
     return response
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
